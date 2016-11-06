@@ -4,7 +4,7 @@ namespace Shayan.Caching
 {
     /*
      * An N-way set associative cache represented by OrderedDictionaries. 
-     * Lookup is done in O(1), additions are done in O(n) where n is the size of the sets.
+     * Lookup s and additions are done in O(n) where n is the size of the sets.
      * 
      * NWayCache takes 3 parameters:
      *      n is the size of the sets. Default 10.
