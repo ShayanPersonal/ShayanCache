@@ -7,8 +7,8 @@
     <ProjectGuid>{3706B672-5569-49B8-8A68-223E2C96CA93}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>InterviewFEI</RootNamespace>
-    <AssemblyName>InterviewFEI</AssemblyName>
+    <RootNamespace>ShayanCache</RootNamespace>
+    <AssemblyName>ShayanCache</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
