@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("InterviewFEI")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("ShayanCache")]
+[assembly: AssemblyDescription("An implementation of a generic, N-Way set associative cache in C# using OrderedDictionaries")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("InterviewFEI")]
+[assembly: AssemblyProduct("ShayanCache")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
