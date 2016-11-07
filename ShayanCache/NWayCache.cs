@@ -7,16 +7,20 @@ namespace Shayan.Caching
      * Lookup s and additions are done in O(n) where n is the size of the sets.
      * 
      * NWayCache takes 3 parameters:
-     *      n is the size of the sets. Default 10.
-     *      setCount is the number of sets in the cache. Default 10.
+     *      capacity is the total cache capacity. Default 10.
+     *      n is the size of each set. Default is 1.
      *      policy is a string representing the replacement policy. Default LRU.
      *      
-     *      Capacity is automatically computed as setCount * n.
+     *      The number of sets, setCount, is capacity / n. If capacity % n != 0 an extra set is added with set size = capacity % n.
      *      All of these attributes can be read through their corresponding property. Policy can be modified after initialization.
      *      
      *  Public API:
+     *  
      *      void Add(key, value) inserts a key value pair to the cache. If cache is full, evicts the most recently used or least recently 
      *          used item depending on replacement policy.
+     *          
+     *      bool TryGetValue(key, out value) checks if an entry for the key exists in the cache and sets "value" to its
+     *      corresponding value. If it doesn't exist, returns false and sets value as the default for the type.
      *          
      *      bool Fetch(key) checks if a key-value pair exists in the cache for the key. If it exists, it's prepped for retrieval and returns
      *          True. Otherwise returns False.
@@ -29,7 +33,7 @@ namespace Shayan.Caching
      *      
      *      Properties include N, Capacity, SetCount, and Policy. Policy can be modified, the others are read-only.
      *      
-     */      
+     */
 
     class NWayCache<TKey, TValue>
     {
@@ -40,13 +44,22 @@ namespace Shayan.Caching
 
         private int GetHash(TKey key)
         {
-            return key.GetHashCode() % SetCount;
+            return Math.Abs(key.GetHashCode()) % SetCount;
         }
 
         //Properties
-        public int N { get; }
-        public int Capacity { get; }
-        public int SetCount { get; }
+        public int N {
+            get;
+            private set;
+        }
+        public int Capacity {
+            get;
+            private set;
+        }
+        public int SetCount {
+            get;
+            private set;
+        }
         public string Policy
         {
             get { return _policy; }
@@ -59,19 +72,41 @@ namespace Shayan.Caching
         }
 
         //Public methods
-        public NWayCache(int n = 10, int setCount = 10, string policy = "LRU")
+        public NWayCache(int capacity = 10, int n = 1, string policy = "LRU")
         {
-            if (setCount < 1)
-                throw new ArgumentException("setCount must be a positive integer", "setCount");
+            if (capacity < 1)
+                throw new ArgumentException("Capacity must be a positive integer", "capacity");
             if (n < 1)
                 throw new ArgumentException("Set size must be a positive integer", "n");
             Policy = policy;
-            Capacity = setCount * n;
+            Capacity = capacity;
             N = n;
-            SetCount = setCount;
+            SetCount = Capacity / N;
+            bool overflow = false;
+
+            if (Capacity % N != 0)
+            {
+                SetCount += 1;
+                overflow = true;
+            }
             _sets = new NWayCacheSet[SetCount];
-            for (int i = 0; i < SetCount; i++)
+            for (int i = 0; i < SetCount-1; i++)
                 _sets[i] = new NWayCacheSet(N);
+            if (overflow)
+                _sets[SetCount - 1] = new NWayCacheSet(Capacity % N);
+            else
+                _sets[SetCount - 1] = new NWayCacheSet(N);
+        }
+
+        public bool TryGetValue(TKey key, out TValue value)
+        {
+            if (Fetch(key))
+            {
+                value = _lastFetched;
+                return true;
+            }
+            value = default(TValue);
+            return false;     
         }
 
         public bool Fetch(TKey key)

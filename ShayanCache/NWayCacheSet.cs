@@ -23,7 +23,8 @@ namespace Shayan.Caching
             if (!_internalData.Contains(key))
                 return null;
             object value = _internalData[key];
-            _internalData.Remove(key); //Remove the key-value pair and insert it back up at the front as the most recently accessed.
+            //Remove the key-value pair and insert it back up at the front as the most recently accessed.
+            _internalData.Remove(key);
             _internalData.Insert(0, key, value);
             return value;
         }
@@ -40,7 +41,7 @@ namespace Shayan.Caching
                 while (_internalData.Count >= _capacity)
                     _internalData.RemoveAt(_internalData.Count - 1);
             }
-
+            _internalData.Remove(key);
             _internalData.Insert(0, key, value);
         }
 
