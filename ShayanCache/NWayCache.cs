@@ -42,9 +42,9 @@ namespace Shayan.Caching
         private TValue _lastFetched;
         private string _policy;
 
-        private int GetHash(TKey key)
+        private uint GetHash(TKey key)
         {
-            return Math.Abs(key.GetHashCode()) % SetCount;
+            return (uint) ((key.GetHashCode()) % SetCount);
         }
 
         //Properties
